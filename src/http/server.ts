@@ -9,12 +9,15 @@ app.get(
   async ({ body, set }) => {
     const { restaurantName, managerName, email, phone } = body
 
-    const [manager] = await db.insert(users).values({
-      name: managerName,
-      email,
-      phone,
-      role: 'manager',
-    })
+    const [manager] = await db
+      .insert(users)
+      .values({
+        name: managerName,
+        email,
+        phone,
+        role: 'manager',
+      })
+      .returning()
 
     await db.insert(restaurants).values({
       name: restaurantName,
