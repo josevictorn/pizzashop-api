@@ -6,7 +6,7 @@ import { env } from '../env'
 
 const jwtPayload = t.Object({
   sub: t.String(),
-  restauranteId: t.Optional(t.String()),
+  restaurantId: t.Optional(t.String()),
 })
 
 export const auth = new Elysia()
@@ -17,20 +17,32 @@ export const auth = new Elysia()
     }),
   )
   .use(cookie())
-  .derive({ as: 'global' }, ({ jwt, setCookie, removeCookie }) => {
+  .derive({ as: 'global' }, ({ jwt, cookie: { auth } }) => {
     return {
       signUser: async (payload: Static<typeof jwtPayload>) => {
         const token = await jwt.sign(payload)
 
-        setCookie('auth', token, {
-          httpOnly: true,
-          maxAge: 60 * 60 * 24 * 7, // 7 days
-          path: '/',
-        })
+        auth!.value = token
+        auth!.httpOnly = true
+        auth!.maxAge = 60 * 60 * 24 * 7 // 7 days
+        auth!.path = '/'
       },
 
       signOut: () => {
-        removeCookie('auth')
+        auth?.remove()
+      },
+
+      getCurrentUser: async () => {
+        const payload = await jwt.verify(auth!.value || '')
+
+        if (!payload) {
+          throw new Error('Unauthorized')
+        }
+
+        return {
+          userId: payload.sub,
+          restaurantId: payload.restaurantId,
+        }
       },
     }
   })
