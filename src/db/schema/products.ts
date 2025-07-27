@@ -1,8 +1,9 @@
 import { createId } from '@paralleldrive/cuid2'
 import { integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
-import { restaurants } from '.'
+import { orderItems, restaurants } from '.'
+import { relations } from 'drizzle-orm'
 
-export const product = pgTable('products', {
+export const products = pgTable('products', {
   id: text('id')
     .$defaultFn(() => createId())
     .primaryKey(),
@@ -14,4 +15,15 @@ export const product = pgTable('products', {
     .references(() => restaurants.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
+})
+
+export const productsRelations = relations(products, ({ one, many }) => {
+  return {
+    restaurant: one(restaurants, {
+      fields: [products.restaurantId],
+      references: [restaurants.id],
+      relationName: 'restaurant_products',
+    }),
+    orderItems: many(orderItems),
+  }
 })
