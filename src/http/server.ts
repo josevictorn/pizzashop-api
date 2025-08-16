@@ -15,6 +15,8 @@ import { getMonthReceipt } from './routes/get-month-receipt'
 import { getDayOrdersAmount } from './routes/get-day-orders-amount'
 import { getMonthOrdersAmount } from './routes/get-month-orders-amount'
 import { getMonthCanceledOrdersAmount } from './routes/get-amount-canceled-orders-amount'
+import { getPopularProducts } from './routes/get-popular-products'
+import { getDailyReceiptInPeriod } from './routes/get-daily-receipt-in-period'
 
 const app = new Elysia()
   .use(registerRestaurants)
@@ -26,6 +28,8 @@ const app = new Elysia()
   .use(getOrderDetails)
   .use(getMonthOrdersAmount)
   .use(getMonthCanceledOrdersAmount)
+  .use(getPopularProducts)
+  .use(getDailyReceiptInPeriod)
   .use(approveOrder)
   .use(cancelOrder)
   .use(deliverOrder)
