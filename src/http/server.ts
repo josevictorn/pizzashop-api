@@ -13,6 +13,7 @@ import { dispatchOrder } from './routes/dispatch-order'
 import { getOrders } from './routes/get-orders'
 import { getMonthReceipt } from './routes/get-month-receipt'
 import { getDayOrdersAmount } from './routes/get-day-orders-amount'
+import { getMonthOrdersAmount } from './routes/get-month-orders-amount'
 
 const app = new Elysia()
   .use(registerRestaurants)
@@ -22,6 +23,7 @@ const app = new Elysia()
   .use(getProfile)
   .use(getManagedRestaurant)
   .use(getOrderDetails)
+  .use(getMonthOrdersAmount)
   .use(approveOrder)
   .use(cancelOrder)
   .use(deliverOrder)
